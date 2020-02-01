@@ -11,7 +11,7 @@ public class CommonModels {
     public int image;
     public String imageUrl;
     public Drawable imageDrw;
-    public String title;
+    public String title,imdb;
     public String quality;
     public String brief;
     public String stremURL;
@@ -23,6 +23,24 @@ public class CommonModels {
     public List<SubtitleModel> listSub = new ArrayList<>();
     public String fileSize;
     public String resulation;
+    public String genre;
+    public String director;
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getDirector() {
+        return director;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
+    }
 
     public String getFileSize() {
         return fileSize;
@@ -171,5 +189,13 @@ public class CommonModels {
 
     public void setBrief(String brief) {
         this.brief = brief;
+    }
+
+    public String getImdb() {
+        return imdb;
+    }
+
+    public void setImdb(String imdb) {
+        this.imdb = imdb;
     }
 }

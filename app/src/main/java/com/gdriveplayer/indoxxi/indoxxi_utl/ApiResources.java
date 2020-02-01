@@ -9,9 +9,19 @@ public class ApiResources {
     public static String statusapp="0",apk="null";
     public static String statusnotif="0",judulstatus="null",pesan="null",foto="null",icon="null",apknew="null";
     public static String admobstatus="0";
+    public static String statussistem;
     public static String startappid,startappstatus;
     String URL = Config.API_SERVER_URL;
     String newgdriveplayerus="https://api.gdriveplayer.us/v1/movie/newest?limit=20";
+    String gdrivesearch="https://api.gdriveplayer.us/v1/movie/search?";
+
+    public String getGdrivesearch() {
+        return gdrivesearch;
+    }
+
+    public void setGdrivesearch(String gdrivesearch) {
+        this.gdrivesearch = gdrivesearch;
+    }
 
     public String getNewgdriveplayerus() {
         return newgdriveplayerus;

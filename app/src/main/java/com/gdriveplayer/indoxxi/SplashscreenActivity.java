@@ -210,6 +210,22 @@ public class SplashscreenActivity extends AppCompatActivity {
 
 
                 try {
+                    JSONObject jsonObject=response.getJSONObject("status");
+                    ApiResources.statussistem = jsonObject.getString("status");
+
+
+                    System.out.println(ApiResources.statussistem);
+
+
+
+                } catch (JSONException e) {
+                    Log.e("json", "ERROR");
+
+
+                    e.printStackTrace();
+                }
+
+                try {
                     JSONObject jsonObject=response.getJSONObject("admob");
 
                     ApiResources.admobstatus = jsonObject.getString("status");

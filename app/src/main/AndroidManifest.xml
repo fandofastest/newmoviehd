@@ -104,11 +104,7 @@
             android:name="com.gdriveplayer.indoxxi.ItemTVActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Nobar" />
-        <activity
-            android:name="com.gdriveplayer.indoxxi.ItemSeriesActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Nobar" />
-        <activity android:name="com.gdriveplayer.indoxxi.UpdateActivity"/>
+
     </application>
 
 </manifest>

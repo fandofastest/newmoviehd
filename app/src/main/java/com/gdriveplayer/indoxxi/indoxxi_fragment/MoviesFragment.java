@@ -110,14 +110,14 @@ public class MoviesFragment extends Fragment {
 
                     progressBar.setVisibility(View.VISIBLE);
 
-                    getData(apiResources.getGet_movie(),pageCount);
+                    getData(apiResources.getNewgdriveplayerus());
                 }
             }
         });
 
 
         if (new NetworkInst(getContext()).isNetworkAvailable()){
-            getData(apiResources.getGet_movie(),pageCount);
+            getData(apiResources.getNewgdriveplayerus());
         }else {
             tvNoItem.setText(getResources().getString(R.string.no_internet));
             shimmerFrameLayout.stopShimmer();
@@ -135,7 +135,7 @@ public class MoviesFragment extends Fragment {
                 recyclerView.removeAllViews();
                 mAdapter.notifyDataSetChanged();
                 if (new NetworkInst(getContext()).isNetworkAvailable()){
-                    getData(apiResources.getGet_movie(),pageCount);
+                    getData(apiResources.getNewgdriveplayerus());
                 }else {
                     tvNoItem.setText(getResources().getString(R.string.no_internet));
                     shimmerFrameLayout.stopShimmer();
@@ -156,12 +156,12 @@ public class MoviesFragment extends Fragment {
         }
     }
 
-    private void getData(String url,int pageNum){
-
-        String fullUrl = url+String.valueOf(pageNum);
+    private void getData(String url){
 
 
-        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET, fullUrl, null, new Response.Listener<JSONArray>() {
+
+
+        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 isLoading=false;
@@ -172,14 +172,33 @@ public class MoviesFragment extends Fragment {
                 for (int i=0;i<response.length();i++){
 
                     try {
-                        JSONObject jsonObject=response.getJSONObject(i);
-                        CommonModels models =new CommonModels();
-                        models.setImageUrl(jsonObject.getString("thumbnail_url"));
+                        JSONObject jsonObject = response.getJSONObject(i);
+                        CommonModels models = new CommonModels();
+                        models.setImageUrl(jsonObject.getString("poster"));
+                        models.setGenre(jsonObject.getString("genre"));
+                        models.setDirector(jsonObject.getString("director"));
+                        if ( jsonObject.getString("poster").equals("")){
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
+                        }
+
                         models.setTitle(jsonObject.getString("title"));
+
+
+
+
                         models.setVideoType("movie");
-                        models.setReleaseDate(jsonObject.getString("release"));
-                        models.setQuality(jsonObject.getString("video_quality"));
-                        models.setId(jsonObject.getString("videos_id"));
+                        models.setReleaseDate(jsonObject.getString("year"));
+                        models.setQuality(jsonObject.getString("quality"));
+                        models.setId(jsonObject.getString("imdb"));
+
+                        if (ApiResources.statussistem.equals("berbahaya")){
+                            models.setId("0");
+                            models.setTitle("Title Movie");
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
+
+
+                        }
+
                         list.add(models);
 
                     } catch (JSONException e) {

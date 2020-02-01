@@ -73,22 +73,26 @@ public class HomeFragment extends Fragment {
     private Timer timer;
 
     private ShimmerFrameLayout shimmerFrameLayout;
-    private RecyclerView recyclerViewMovie, recyclerViewTv, recyclerViewTvSeries, recyclerViewGenre,recyclerViewPopular,rvlatestmoviews,rvpopularmovies;
+    private RecyclerView recyclerViewMovie2020,recyclerViewMovie2019,recyclerViewMovie2018, recyclerViewTv, recyclerViewTvSeries, recyclerViewGenre,recyclerViewPopular,rvlatestmoviews,rvpopularmovies;
     private RecyclerView genreRv;
     private RecyclerView countryRv;
     private GenreAdapter genreAdapter;
     private GenreAdapter countryAdapter;
     private RelativeLayout genreLayout, countryLayout;
-    private HomePageAdapter adapterMovie, adapterSeries,adapterpopular,adapterlatestmovies;
+    private HomePageAdapter adapterMovie2020,adapterMovie2018,adapterMovie2019, adapterSeries,adapterpopular,adapterlatestmovies;
     private LiveTvHomeAdapter adapterTv;
     private List<CommonModels> listlatestMovie = new ArrayList<>();
+    private List <CommonModels> list2020 =new ArrayList<>();
+    private List <CommonModels> list2019 =new ArrayList<>();
+    private List <CommonModels> list2018 =new ArrayList<>();
+
     private List<CommonModels> listTv = new ArrayList<>();
     private List<CommonModels> listpopular = new ArrayList<>();
     private List<CommonModels> listSeries = new ArrayList<>();
     private List<CommonModels> genreList = new ArrayList<>();
     private List<CommonModels> countryList = new ArrayList<>();
     private ApiResources apiResources;
-    private Button btnMoreMovie, btnMoreTv, btnMoreSeries,btnMorePopularTvseries,btnmorepopularmovies,btnmorelatestmovies;
+    private Button btnMoreMovie, btnMoreTv, btnmore2020,btnmore2019,btnmore2018,btnMorePopularTvseries,btnmorepopularmovies,btnmorelatestmovies;
 
     private int checkPass = 0;
 
@@ -131,7 +135,9 @@ public class HomeFragment extends Fragment {
         adView = view.findViewById(R.id.adView);
         adView1 = view.findViewById(R.id.adView1);
         btnmorelatestmovies = view.findViewById(R.id.btn_more_latest_movie);
-        btnmorepopularmovies=view.findViewById(R.id.btn_more_popular_movie);
+        btnmore2020=view.findViewById(R.id.btn2020);
+        btnmore2019=view.findViewById(R.id.btn2019);
+        btnmore2018=view.findViewById(R.id.btn2018);
         btnMoreTv = view.findViewById(R.id.btn_more_tv);
         btnMoreMovie = view.findViewById(R.id.btn_more_movie);
 
@@ -166,6 +172,7 @@ public class HomeFragment extends Fragment {
 
         //----btn click-------------
         btnClick();
+        sliderLayout.setVisibility(View.GONE);
 
         // --- genre recycler view ---------
         genreRv.setLayoutManager(new LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false));
@@ -191,13 +198,27 @@ public class HomeFragment extends Fragment {
 
 
         //----featured tv recycler view-----------------
-        rvpopularmovies = view.findViewById(R.id.recyclerViewPopularmovies);
-        rvpopularmovies.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false));
-        rvpopularmovies.setHasFixedSize(true);
-        rvpopularmovies.setNestedScrollingEnabled(false);
-        adapterpopular = new HomePageAdapter(getActivity(), listpopular);
-        rvpopularmovies.setAdapter(adapterpopular);
+        recyclerViewMovie2020 = view.findViewById(R.id.rv2020);
+        recyclerViewMovie2020.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewMovie2020.setHasFixedSize(true);
+        recyclerViewMovie2020.setNestedScrollingEnabled(false);
+        adapterMovie2020 = new HomePageAdapter(getActivity(), list2020);
+        recyclerViewMovie2020.setAdapter(adapterMovie2020);
+        //----featured tv recycler view-----------------
+        recyclerViewMovie2018 = view.findViewById(R.id.rv2018);
+        recyclerViewMovie2018.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewMovie2018.setHasFixedSize(true);
+        recyclerViewMovie2018.setNestedScrollingEnabled(false);
+        adapterMovie2018 = new HomePageAdapter(getActivity(), list2018);
+        recyclerViewMovie2018.setAdapter(adapterMovie2018);
 
+        //----featured tv recycler view-----------------
+        recyclerViewMovie2019 = view.findViewById(R.id.rv2019);
+        recyclerViewMovie2019.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewMovie2019.setHasFixedSize(true);
+        recyclerViewMovie2019.setNestedScrollingEnabled(false);
+        adapterMovie2019 = new HomePageAdapter(getActivity(), list2019);
+        recyclerViewMovie2019.setAdapter(adapterMovie2019);
 
         //----movie's recycler view-----------------
         rvlatestmoviews = view.findViewById(R.id.recyclerLatestmovies);
@@ -235,13 +256,14 @@ public class HomeFragment extends Fragment {
             if (Constants.IS_COUNTRY_SHOW) {
                 getAllCountry();
             }
-            getLatestMovie();
-            getPopularMovies();
-            getFeaturedTV();
-            getSlider(apiResources.getSlider());
+            getmovegdrive();
+            getmovieyear2019();
+            getmovieyear2018();
+            getmovieyear2020();
+
 //            getLatestSeries();
-            getPopularTvSeries();
-            getDataByGenre();
+
+
 
 
         } else {
@@ -260,16 +282,14 @@ public class HomeFragment extends Fragment {
 //                recyclerViewTvSeries.removeAllViews();
 //                recyclerViewGenre.removeAllViews();
                 rvlatestmoviews.removeAllViews();
-                rvpopularmovies.removeAllViews();
+                recyclerViewMovie2019.removeAllViews();
+                recyclerViewMovie2020.removeAllViews();
+                recyclerViewMovie2018.removeAllViews();
 
                 genreList.clear();
                 countryList.clear();
                 listlatestMovie.clear();
-                listpopular.clear();
-                listSeries.clear();
-                listSlider.clear();
-                listTv.clear();
-                listGenre.clear();
+
 
 
                 if (new NetworkInst(getContext()).isNetworkAvailable()) {
@@ -279,12 +299,12 @@ public class HomeFragment extends Fragment {
                     if (Constants.IS_COUNTRY_SHOW) {
                         getAllCountry();
                     }
-                    getLatestMovie();
-                    getPopularMovies();
-                    getFeaturedTV();
-                    getSlider(apiResources.getSlider());
-//                    getLatestSeries();
-                    getDataByGenre();
+                    getmovegdrive();
+                    getmovieyear2020();
+                    getmovieyear2019();
+                    getmovieyear2018();
+
+
                 } else {
                     tvNoItem.setText(getString(R.string.no_internet));
                     shimmerFrameLayout.stopShimmer();
@@ -311,31 +331,52 @@ public class HomeFragment extends Fragment {
 
     private void btnClick() {
 
-        btnMoreMovie.setOnClickListener(new View.OnClickListener() {
+        btnmore2019.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ItemMovieActivity.class);
-                intent.putExtra("url", apiResources.getGet_movie());
+                intent.putExtra("url", apiResources.getGdrivesearch()+"year="+"2019");
                 intent.putExtra("title", "Movies");
+                intent.putExtra("type","");
                 getActivity().startActivity(intent);
             }
         });
 
-        btnmorepopularmovies.setOnClickListener(new View.OnClickListener() {
+
+        btnmore2018.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ItemMovieActivity.class);
-                intent.putExtra("url", apiResources.getPopular_movie());
+                intent.putExtra("url", apiResources.getGdrivesearch()+"year="+"2018");
                 intent.putExtra("title", "Movies");
+                intent.putExtra("type","");
+
                 getActivity().startActivity(intent);
             }
         });
+        btnmore2020.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ItemMovieActivity.class);
+                intent.putExtra("url", apiResources.getGdrivesearch()+"year="+"2020");
+                intent.putExtra("title", "Movies");
+                intent.putExtra("type","");
+
+                getActivity().startActivity(intent);
+            }
+        });
+
+
+
+
         btnmorelatestmovies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ItemMovieActivity.class);
                 intent.putExtra("url", apiResources.getNewgdriveplayerus());
                 intent.putExtra("title", "Movies");
+                intent.putExtra("type","");
+
                 getActivity().startActivity(intent);
             }
         });
@@ -345,29 +386,13 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(getContext(), ItemTVActivity.class);
                 intent.putExtra("url", apiResources.getGet_live_tv());
                 intent.putExtra("title", "Live TV");
+                intent.putExtra("type","");
+
                 getActivity().startActivity(intent);
             }
         });
 
-//        btnMorePopularTvseries.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getContext(), ItemSeriesActivity.class);
-//                intent.putExtra("url", apiResources.getPopularTvSerieslist());
-//                intent.putExtra("title", "TV Series");
-//
-//                getActivity().startActivity(intent);
-//            }
-//        });
-//        btnMoreSeries.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getContext(), ItemSeriesActivity.class);
-//                intent.putExtra("url", apiResources.getTvSeries());
-//                intent.putExtra("title", "TV Series");
-//                getActivity().startActivity(intent);
-//            }
-//        });
+
 
     }
 
@@ -416,275 +441,9 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void getDataByGenre() {
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, new ApiResources().getGenreMovieURL(), null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
 
-                for (int i = 0; i < response.length(); i++) {
-
-                    try {
-
-                        JSONObject jsonObject = response.getJSONObject(i);
-
-                        GenreModel models = new GenreModel();
-
-                        models.setName(jsonObject.getString("name"));
-                        models.setId(jsonObject.getString("genre_id"));
-                        JSONArray jsonArray = jsonObject.getJSONArray("videos");
-                        //listGenreMovie.clear();
-                        List<CommonModels> listGenreMovie = new ArrayList<>();
-                        for (int j = 0; j < jsonArray.length(); j++) {
-
-                            JSONObject movieObject = jsonArray.getJSONObject(j);
-
-                            CommonModels commonModels = new CommonModels();
-
-                            commonModels.setId(movieObject.getString("videos_id"));
-                            commonModels.setTitle(movieObject.getString("title"));
-
-                            if (movieObject.getString("is_tvseries").equals("0")) {
-                                commonModels.setVideoType("movie");
-                            } else {
-                                commonModels.setVideoType("tvseries");
-                            }
-
-
-                            commonModels.setReleaseDate(movieObject.getString("release"));
-                            commonModels.setQuality(movieObject.getString("video_quality"));
-                            commonModels.setImageUrl(movieObject.getString("poster_url"));
-
-                            listGenreMovie.add(commonModels);
-
-                        }
-
-
-                        models.setList(listGenreMovie);
-
-                        listGenre.add(models);
-                        genreHomeAdapter.notifyDataSetChanged();
-//                        Log.e("LIST 2 SIZE ::", String.valueOf(listGenreMovie.size()));
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        VolleySingleton.getInstance(getContext()).addToRequestQueue(jsonArrayRequest);
-
-
-    }
-
-    private void getSlider(String url) {
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-
-                    swipeRefreshLayout.setRefreshing(false);
-                    shimmerFrameLayout.stopShimmer();
-                    shimmerFrameLayout.setVisibility(View.GONE);
-                    scrollView.setVisibility(View.VISIBLE);
-                    coordinatorLayout.setVisibility(View.GONE);
-
-
-                    if (response.getString("slider_type").equals("disable")) {
-                        sliderLayout.setVisibility(View.GONE);
-                    } else if (response.getString("slider_type").equals("movie")) {
-
-                        JSONArray jsonArray = response.getJSONArray("data");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            CommonModels models = new CommonModels();
-                            models.setImageUrl(jsonObject.getString("poster_url"));
-                            models.setTitle(jsonObject.getString("title"));
-                            String is_tvseries= jsonObject.getString("is_tvseries");
-
-                            if (is_tvseries.equals("1")){
-                                models.setVideoType("tvseries");
-                            }
-                            else{
-                                models.setVideoType("movie");
-                            }
-
-                            models.setId(jsonObject.getString("videos_id"));
-
-                            listSlider.add(models);
-                        }
-
-                    } else {
-                        JSONArray jsonArray = response.getJSONArray("data");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            CommonModels models = new CommonModels();
-                            models.setImageUrl(jsonObject.getString("image_link"));
-                            models.setTitle(jsonObject.getString("title"));
-                            models.setVideoType("image");
-                            listSlider.add(models);
-
-                        }
-                    }
-
-                    sliderAdapter.notifyDataSetChanged();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                swipeRefreshLayout.setRefreshing(false);
-                shimmerFrameLayout.stopShimmer();
-                shimmerFrameLayout.setVisibility(View.GONE);
-                coordinatorLayout.setVisibility(View.VISIBLE);
-                scrollView.setVisibility(View.GONE);
-
-            }
-        });
-
-        Volley.newRequestQueue(getActivity()).add(jsonObjectRequest);
-
-
-    }
-
-
-    private void getLatestSeries() {
-
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiResources.getLatestTvSeries(), null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-
-                swipeRefreshLayout.setRefreshing(false);
-                shimmerFrameLayout.stopShimmer();
-                shimmerFrameLayout.setVisibility(View.GONE);
-
-                for (int i = 0; i < response.length(); i++) {
-
-                    try {
-                        JSONObject jsonObject = response.getJSONObject(i);
-                        CommonModels models = new CommonModels();
-                        models.setImageUrl(jsonObject.getString("thumbnail_url"));
-                        models.setTitle(jsonObject.getString("title"));
-                        models.setVideoType("tvseries");
-                        models.setReleaseDate(jsonObject.getString("release"));
-                        models.setQuality(jsonObject.getString("video_quality"));
-                        models.setId(jsonObject.getString("videos_id"));
-                        listSeries.add(models);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                adapterSeries.notifyDataSetChanged();
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        singleton.addToRequestQueue(jsonArrayRequest);
-
-    }
-
-    private void getPopularTvSeries() {
-
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiResources.getPopularTvSeries(), null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-
-                swipeRefreshLayout.setRefreshing(false);
-                shimmerFrameLayout.stopShimmer();
-                shimmerFrameLayout.setVisibility(View.GONE);
-
-                for (int i = 0; i < response.length(); i++) {
-
-                    try {
-                        JSONObject jsonObject = response.getJSONObject(i);
-                        CommonModels models = new CommonModels();
-                        models.setImageUrl(jsonObject.getString("thumbnail_url"));
-                        models.setTitle(jsonObject.getString("title"));
-                        models.setVideoType("tvseries");
-                        models.setReleaseDate(jsonObject.getString("release"));
-                        models.setQuality(jsonObject.getString("video_quality"));
-                        models.setId(jsonObject.getString("videos_id"));
-                        listpopular.add(models);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                adapterpopular.notifyDataSetChanged();
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        singleton.addToRequestQueue(jsonArrayRequest);
-
-    }
-
-
-    private void getPopularMovies() {
-
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiResources.getPopular_movie(), null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-
-                swipeRefreshLayout.setRefreshing(false);
-                shimmerFrameLayout.stopShimmer();
-                shimmerFrameLayout.setVisibility(View.GONE);
-
-                for (int i = 0; i < response.length(); i++) {
-
-                    try {
-                        JSONObject jsonObject = response.getJSONObject(i);
-                        CommonModels models = new CommonModels();
-                        models.setImageUrl(jsonObject.getString("thumbnail_url"));
-                        models.setTitle(jsonObject.getString("title"));
-                        models.setVideoType("movie");
-                        models.setReleaseDate(jsonObject.getString("release"));
-                        models.setQuality(jsonObject.getString("video_quality"));
-                        models.setId(jsonObject.getString("videos_id"));
-                        listpopular.add(models);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                adapterpopular.notifyDataSetChanged();
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        singleton.addToRequestQueue(jsonArrayRequest);
-
-    }
-    private void getLatestMovie() {
+    private void getmovegdrive() {
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiResources.getNewgdriveplayerus(), null, new Response.Listener<JSONArray>() {
             @Override
@@ -697,9 +456,10 @@ public class HomeFragment extends Fragment {
                         JSONObject jsonObject = response.getJSONObject(i);
                         CommonModels models = new CommonModels();
                         models.setImageUrl(jsonObject.getString("poster"));
-
+                        models.setGenre(jsonObject.getString("genre"));
+                        models.setDirector(jsonObject.getString("director"));
                         if ( jsonObject.getString("poster").equals("")){
-                            models.setImageUrl("https://lh6.googleusercontent.com/proxy/hIgFSMyx4VsuoQh8h-ZfI3IiK9uFSLZ7pG67H_1RwEBDEPiWX-odcJ0PkWriAPeqwKyC6n-12UTrNmQF2ul9DAjwKMljG3zSCCTDoTVDPexFHV9l_JD5WMbmpnUJqWLqYA=s0-d");
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
                         }
 
                         models.setTitle(jsonObject.getString("title"));
@@ -711,6 +471,15 @@ public class HomeFragment extends Fragment {
                         models.setReleaseDate(jsonObject.getString("year"));
                         models.setQuality(jsonObject.getString("quality"));
                         models.setId(jsonObject.getString("imdb"));
+
+                        if (ApiResources.statussistem.equals("berbahaya")){
+                            models.setId("0");
+                            models.setTitle("Title Movie");
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
+
+
+                        }
+
                         listlatestMovie.add(models);
 
                     } catch (JSONException e) {
@@ -730,9 +499,13 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void getFeaturedTV() {
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiResources.getGet_featured_tv(), null, new Response.Listener<JSONArray>() {
+
+    private void getmovieyear2020() {
+
+
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiResources.getGdrivesearch()+"year="+"2020", null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 swipeRefreshLayout.setRefreshing(false);
@@ -742,26 +515,168 @@ public class HomeFragment extends Fragment {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
                         CommonModels models = new CommonModels();
-                        models.setImageUrl(jsonObject.getString("poster_url"));
-                        models.setTitle(jsonObject.getString("tv_name"));
-                        models.setVideoType("tv");
-                        models.setId(jsonObject.getString("live_tv_id"));
-                        listTv.add(models);
+                        models.setImageUrl(jsonObject.getString("poster"));
+                        models.setGenre(jsonObject.getString("genre"));
+                        models.setDirector(jsonObject.getString("director"));
+                        if ( jsonObject.getString("poster").equals("")){
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
+                        }
+
+                        models.setTitle(jsonObject.getString("title"));
+
+
+
+
+                        models.setVideoType("movie");
+                        models.setReleaseDate(jsonObject.getString("year"));
+                        models.setQuality(jsonObject.getString("quality"));
+                        models.setId(jsonObject.getString("imdb"));
+
+                        if (ApiResources.statussistem.equals("berbahaya")){
+                            models.setId("0");
+                            models.setTitle("Title Movie");
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
+
+
+                        }
+
+                        list2020.add(models);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                adapterTv.notifyDataSetChanged();
+                adapterMovie2020.notifyDataSetChanged();
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
             }
         });
         singleton.addToRequestQueue(jsonArrayRequest);
 
     }
+    private void getmovieyear2018() {
+
+
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiResources.getGdrivesearch()+"year="+"2018", null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                swipeRefreshLayout.setRefreshing(false);
+                shimmerFrameLayout.stopShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+                        CommonModels models = new CommonModels();
+                        models.setImageUrl(jsonObject.getString("poster"));
+                        models.setGenre(jsonObject.getString("genre"));
+                        models.setDirector(jsonObject.getString("director"));
+                        if ( jsonObject.getString("poster").equals("")){
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
+                        }
+
+                        models.setTitle(jsonObject.getString("title"));
+
+
+
+
+                        models.setVideoType("movie");
+                        models.setReleaseDate(jsonObject.getString("year"));
+                        models.setQuality(jsonObject.getString("quality"));
+                        models.setId(jsonObject.getString("imdb"));
+
+                        if (ApiResources.statussistem.equals("berbahaya")){
+                            models.setId("0");
+                            models.setTitle("Title Movie");
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
+
+
+                        }
+
+                        list2018.add(models);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                adapterMovie2018.notifyDataSetChanged();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        singleton.addToRequestQueue(jsonArrayRequest);
+
+    }
+    private void getmovieyear2019() {
+
+
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiResources.getGdrivesearch()+"year="+"2019", null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                swipeRefreshLayout.setRefreshing(false);
+                shimmerFrameLayout.stopShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+                        CommonModels models = new CommonModels();
+                        models.setImageUrl(jsonObject.getString("poster"));
+                        models.setGenre(jsonObject.getString("genre"));
+                        models.setDirector(jsonObject.getString("director"));
+                        models.setTitle(jsonObject.getString("title"));
+                        if ( jsonObject.getString("poster").equals("")){
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
+                        }
+
+
+                        models.setVideoType("movie");
+                        models.setReleaseDate(jsonObject.getString("year"));
+                        models.setQuality(jsonObject.getString("quality"));
+                        models.setId(jsonObject.getString("imdb"));
+
+                        if (ApiResources.statussistem.equals("berbahaya")){
+                            models.setId("0");
+                            models.setTitle("Title Movie");
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
+
+
+                        }
+
+
+
+
+
+
+
+                        list2019.add(models);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                adapterMovie2019.notifyDataSetChanged();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        singleton.addToRequestQueue(jsonArrayRequest);
+
+    }
+
+
 
     @Override
     public void onStart() {
@@ -854,8 +769,8 @@ public class HomeFragment extends Fragment {
                     if (models.getVideoType().equals("movie")) {
 
                         Intent intent = new Intent(getContext(), DetailsActivity.class);
-                        intent.putExtra("vType", models.getVideoType());
-                        intent.putExtra("id", models.getId());
+                        intent.putExtra("vType","movie");
+                        intent.putExtra("id", models.getImdb());
                         startActivity(intent);
 
                     } else {

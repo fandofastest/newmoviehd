@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.gdriveplayer.indoxxi.indoxxi_navfragmnet.YearFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.fragment.app.Fragment;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private List<NavigationModel> list =new ArrayList<>();
     private NavigationView navigationView;
     private String[] navItemImage;
+    private ApiResources apiResources;
 
     private String[] navItemName2;
     private String[] navItemImage2;
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         navMenuStyle = Constants.NAV_MENU_STYLE;
-
+        apiResources = new ApiResources();
         //---analytics-----------
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
@@ -206,29 +208,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 else if (position==1){
                     loadFragment(new MoviesFragment());
                 }
+
                 else if (position==2){
-                    loadFragment(new LiveTvFragment());
+                    loadFragment(new YearFragment());
                 }
                 else if (position==3){
-                    loadFragment(new TvSeriesFragment());
-                }
-                else if (position==4){
                     loadFragment(new GenreFragment());
                 }
-                else if (position==5){
+                else if (position==4){
                     loadFragment(new CountryFragment());
                 }
                 else {
                     if (status){
 
-                        if (position==6){
+                        if (position==5){
                             Intent intent=new Intent(MainActivity.this,ProfileActivity.class);
                             startActivity(intent);
                         }
-                        else if (position==7){
+                        else if (position==6){
                             loadFragment(new FavoriteFragment());
                         }
-                        else if (position==8){
+                        else if (position==7){
                             new AlertDialog.Builder(MainActivity.this).setMessage("Are you sure to logout ?")
                                     .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                         @Override
@@ -249,17 +249,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         }
                                     }).create().show();
                         }
-                        else if (position==9){
+                        else if (position==8){
                             Intent intent=new Intent(MainActivity.this,SettingsActivity.class);
                             startActivity(intent);
                             MainActivity.this.finish();
                         }
                     }else {
-                        if (position==6){
+                        if (position==5){
                             Intent intent=new Intent(MainActivity.this,LoginActivity.class);
                             startActivity(intent);
                         }
-                        else if (position==7){
+                        else if (position==6){
                             Intent intent=new Intent(MainActivity.this,SettingsActivity.class);
                             startActivity(intent);
                             MainActivity.this.finish();
@@ -364,8 +364,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public boolean onQueryTextSubmit(String s) {
 
-                        Intent intent=new Intent(MainActivity.this,SearchActivity.class);
-                        intent.putExtra("q",s);
+                        Intent intent=new Intent(MainActivity.this,ItemMovieActivity.class);
+
+                        String searchurl=apiResources.getGdrivesearch()+"title=";
+                        System.out.println(searchurl+s);
+                        intent.putExtra("url",searchurl+s);
+                        intent.putExtra("title","Search Result");
                         startActivity(intent);
 
                         return false;

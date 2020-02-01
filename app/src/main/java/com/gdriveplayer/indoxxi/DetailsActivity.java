@@ -1073,13 +1073,7 @@ public class DetailsActivity extends AppCompatActivity implements CastPlayer.Ses
 
     private void openWebActivity(String s, Context context, String type) {
 
-        if (isPlaying) {
-            player.stop();
-            player.release();
 
-        }
-        player.stop();
-        player.release();
         progressBar.setVisibility(GONE);
         playerLayout.setVisibility(GONE);
         downloadIv.setVisibility(GONE);
@@ -1123,14 +1117,7 @@ public class DetailsActivity extends AppCompatActivity implements CastPlayer.Ses
 
         Log.e("vTYpe :: ", type);
 
-
-        if (type.equals("embed") || type.equals("vimeo") || type.equals("gdrive") || type.equals("youtube-live")) {
-            isVideo = false;
-            openWebActivity(url, context, type);
-        } else {
-            isVideo = true;
-            initVideoPlayer(url, context, type);
-        }
+        openWebActivity(url, context, type);
     }
 
 
@@ -1715,182 +1702,72 @@ public class DetailsActivity extends AppCompatActivity implements CastPlayer.Ses
     }
 
 
-    private void getData(String vtype, String vId) {
+    private void getData(String vtype, final String vId) {
 
 
-        String type = "&&type=" + vtype;
-        String id = "&id=" + vId;
+
 
         strCast = "";
         strDirector = "";
         strGenre = "";
 
 
-        String url = new ApiResources().getDetails() + type + id;
+        String url = "https://api.gdriveplayer.us/v1/imdb/"+ vId;
 
+        System.out.println(url);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
+
+                System.out.println(response);
                 shimmerFrameLayout.stopShimmer();
                 shimmerFrameLayout.setVisibility(GONE);
                 swipeRefreshLayout.setRefreshing(false);
                 try {
 
-                    download_check = response.getString("enable_download");
-                    castImageUrl = response.getString("thumbnail_url");
-                    if (download_check.equals("1")) {
-                        //download_text.setVisibility(VISIBLE);
-                        downloadIv.setVisibility(VISIBLE);
-                        download_text.setVisibility(VISIBLE);
-                        rvDownload.setVisibility(VISIBLE);
-                    } else {
-                        downloadIv.setVisibility(GONE);
-                        download_text.setVisibility(GONE);
-                        rvDownload.setVisibility(GONE);
-                    }
-                    String title = response.getString("title");
+                    downloadIv.setVisibility(GONE);
+                    download_text.setVisibility(GONE);
+                    rvDownload.setVisibility(GONE);
+
+                    String title = response.getString("Title");
                     movieTitle = title;
 
                     tvName.setText(title);
-                    tvRelease.setText("Release On " + response.getString("release"));
-                    tvDes.setText(response.getString("description"));
-
-                    //----director---------------
-                    JSONArray directorArray = response.getJSONArray("director");
-                    for (int i = 0; i < directorArray.length(); i++) {
-                        JSONObject jsonObject = directorArray.getJSONObject(i);
-                        if (i == directorArray.length() - 1) {
-                            strDirector = strDirector + jsonObject.getString("name");
-                        } else {
-                            strDirector = strDirector + jsonObject.getString("name") + ",";
-                        }
-                    }
-
-                    tvDirector.setText(strDirector);
-
-                    //----cast---------------
-                    JSONArray castArray = response.getJSONArray("cast");
-                    for (int i = 0; i < castArray.length(); i++) {
-                        JSONObject jsonObject = castArray.getJSONObject(i);
-
-                        CastCrew castCrew = new CastCrew();
-                        castCrew.setId(jsonObject.getString("star_id"));
-                        castCrew.setName(jsonObject.getString("name"));
-                        castCrew.setUrl(jsonObject.getString("url"));
-                        castCrew.setImageUrl(jsonObject.getString("image_url"));
-
-                        castCrews.add(castCrew);
-
-                    }
-                    castCrewAdapter.notifyDataSetChanged();
+                    tvRelease.setText("Release On " + response.getString("Released"));
+                    tvDes.setText(response.getString("Plot"));
+                    tvGenre.setText(response.getString("Genre"));
+                    tvDirector.setText(response.getString("Director"));
+                    tvCast.setText(response.getString("Actors"));
 
 
-                    //---genre---------------
-                    JSONArray genreArray = response.getJSONArray("genre");
-                    for (int i = 0; i < genreArray.length(); i++) {
-                        JSONObject jsonObject = genreArray.getJSONObject(i);
-                        if (i == castArray.length() - 1) {
-                            strGenre = strGenre + jsonObject.getString("name");
-                        } else {
-                            if (i == genreArray.length()-1) {
-                                strGenre = strGenre + jsonObject.getString("name");
-                            } else {
-                                strGenre = strGenre + jsonObject.getString("name") + ",";
-                            }
-                        }
-                    }
-                    tvGenre.setText(strGenre);
 
-                    //----server---------------
-                    JSONArray serverArray = response.getJSONArray("videos");
-                    for (int i = 0; i < serverArray.length(); i++) {
-                        JSONObject jsonObject = serverArray.getJSONObject(i);
+
+
 
                         CommonModels models = new CommonModels();
-                        models.setTitle(jsonObject.getString("label"));
-                        models.setStremURL(jsonObject.getString("file_url"));
-                        models.setServerType(jsonObject.getString("file_type"));
+                        models.setTitle(response.getString("Title"));
+                        models.setStremURL("https://fando.id/playmovie.php?imdb="+vId);
+                        models.setServerType("embed");
+                        models.setGenre(response.getString("Genre"));
+                     models.setDirector(response.getString("Director"));
 
 
-                        if (jsonObject.getString("file_type").equals("mp4")) {
-                            V_URL = jsonObject.getString("file_url");
-                        }
-
-                        //----subtitle-----------
-                        JSONArray subArray = jsonObject.getJSONArray("subtitle");
-
-                        if (subArray.length() != 0) {
-
-                            List<SubtitleModel> list = new ArrayList<>();
-
-                            for (int j = 0; j < subArray.length(); j++) {
-                                JSONObject subObject = subArray.getJSONObject(j);
-
-                                SubtitleModel subtitleModel = new SubtitleModel();
-
-                                //strSubtitle = subObject.getString("url");
-                                subtitleModel.setUrl(subObject.getString("url"));
-                                subtitleModel.setLang(subObject.getString("language"));
-
-                                list.add(subtitleModel);
-                            }
-                            if (i == 0) {
-                                listSub.addAll(list);
-                            }
-
-                            models.setListSub(list);
 
 
-                        } else {
-                            models.setSubtitleURL(strSubtitle);
-                        }
 
                         //models.setSubtitleURL("null");
 
                         listDirector.add(models);
-                    }
+
                     serverAdapter.notifyDataSetChanged();
 
-
-                    //----related post---------------
-                    JSONArray relatedArray = response.getJSONArray("related_movie");
-                    for (int i = 0; i < relatedArray.length(); i++) {
-                        JSONObject jsonObject = relatedArray.getJSONObject(i);
-                        //Toast.makeText(DetailsActivity.this, "sadfjhi"+ jsonObject.toString(), Toast.LENGTH_SHORT).show();
-                        CommonModels models = new CommonModels();
-                        models.setTitle(jsonObject.getString("title"));
-                        models.setImageUrl(jsonObject.getString("thumbnail_url"));
-                        models.setId(jsonObject.getString("videos_id"));
-                        models.setVideoType("movie");
-
-                        listRelated.add(models);
-                    }
-                    if (listRelated.size() == 0) {
-                        tvRelated.setVisibility(GONE);
-                    }
-                    relatedAdapter.notifyDataSetChanged();
-
-                    //----download list---------
-                    JSONArray downloadArray = response.getJSONArray("download_links");
-                    for (int i = 0; i < downloadArray.length(); i++) {
-                        JSONObject jsonObject = downloadArray.getJSONObject(i);
-
-                        CommonModels models = new CommonModels();
-                        models.setTitle(jsonObject.getString("label"));
-                        models.setStremURL(jsonObject.getString("download_url"));
-                        models.setFileSize(jsonObject.getString("file_size"));
-                        models.setResulation(jsonObject.getString("resolution"));
-                        listDownload.add(models);
-                    }
 
                     //Toast.makeText(DetailsActivity.this, "download size:"+listDownload.size(), Toast.LENGTH_SHORT).show();
                     downloadAdapter.notifyDataSetChanged();
 
                 } catch (Exception e) {
                     e.printStackTrace();
-
-                } finally {
 
                 }
 

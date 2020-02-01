@@ -52,7 +52,7 @@ public class ItemMovieActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private int pageCount=1;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private String id="",type="";
+    private String id="",type="",genre="";
     private CoordinatorLayout coordinatorLayout;
     private TextView tvNoItem;
     private RelativeLayout adView;
@@ -100,7 +100,34 @@ public class ItemMovieActivity extends AppCompatActivity {
         swipeRefreshLayout=findViewById(R.id.swipe_layout);
         tvNoItem=findViewById(R.id.tv_noitem);
 
-        URL=getIntent().getStringExtra("url");
+        id = getIntent().getStringExtra("id");
+        type =getIntent().getStringExtra("type");
+        genre =getIntent().getStringExtra("title");
+
+        switch (type) {
+            case "genre":
+
+                URL = "https://api.gdriveplayer.us/v1/movie/search?genre=" + genre + "&limit=100";
+                break;
+            case "country":
+
+                URL = "https://api.gdriveplayer.us/v1/movie/search?country=" + genre + "&limit=100";
+
+                break;
+            case "year":
+
+                URL = "https://api.gdriveplayer.us/v1/movie/search?year=" + genre + "&limit=100";
+
+                break;
+            default:
+
+                URL = getIntent().getStringExtra("url") + "&limit=100";
+
+
+                break;
+        }
+
+
 
 
 
@@ -125,13 +152,12 @@ public class ItemMovieActivity extends AppCompatActivity {
 
                     progressBar.setVisibility(View.VISIBLE);
 
-                    getData(URL,pageCount);
+                    getData(URL);
                 }
             }
         });
 
-        id = getIntent().getStringExtra("id");
-        type =getIntent().getStringExtra("type");
+
 
 
         if (new NetworkInst(this).isNetworkAvailable()){
@@ -173,16 +199,8 @@ public class ItemMovieActivity extends AppCompatActivity {
 
 
     private void initData(){
-        if (id==null){
-            getData(URL,pageCount);
-        }else if (type.equals("country")){
-            URL = new ApiResources().getMovieByCountry()+"&&id="+id+"&&page=";
-            getData(URL,pageCount);
 
-        }else {
-            URL = new ApiResources().getMovieByGenre()+"&&id="+id+"&&page=";
-            getData(URL,pageCount);
-        }
+        getData(URL);
 
     }
 
@@ -194,11 +212,9 @@ public class ItemMovieActivity extends AppCompatActivity {
     }
 
 
-    private void getData(String url,int pageNum){
+    private void getData(String fullUrl){
 
-        String fullUrl = url+String.valueOf(pageNum);
 
-        Log.d("url :", fullUrl);
 
         final JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET, fullUrl, null, new Response.Listener<JSONArray>() {
             @Override
@@ -223,13 +239,22 @@ public class ItemMovieActivity extends AppCompatActivity {
                         models.setImageUrl(jsonObject.getString("poster"));
                         models.setTitle(jsonObject.getString("title"));
                         if ( jsonObject.getString("poster").equals("")){
-                            models.setImageUrl("https://lh6.googleusercontent.com/proxy/hIgFSMyx4VsuoQh8h-ZfI3IiK9uFSLZ7pG67H_1RwEBDEPiWX-odcJ0PkWriAPeqwKyC6n-12UTrNmQF2ul9DAjwKMljG3zSCCTDoTVDPexFHV9l_JD5WMbmpnUJqWLqYA=s0-d");
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
                         }
 
                         models.setVideoType("movie");
                         models.setReleaseDate(jsonObject.getString("year"));
                         models.setQuality(jsonObject.getString("quality"));
                         models.setId(jsonObject.getString("imdb"));
+
+                        if (ApiResources.statussistem.equals("berbahaya")){
+                            models.setId("0");
+                            models.setTitle("Title Movie");
+                            models.setImageUrl("https://fando.id/movienodb/uploads/default.jpg");
+
+
+                        }
+
                         list.add(models);
 
                     } catch (JSONException e) {

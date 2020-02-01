@@ -23,8 +23,8 @@ android {
         applicationId "com.gdriveplayer.indoxxi"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 4
-        versionName "1.3"
+        versionCode 1
+        versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
