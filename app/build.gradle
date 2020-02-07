@@ -20,7 +20,7 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.gdriveplayer.indoxxi"
+        applicationId "com.fmovies.freemoviehd"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
@@ -29,7 +29,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         manifestPlaceholders = [
-                onesignal_app_id               : 'fdfaa046-9377-4078-b051-8d142bc3c4a7',
+                onesignal_app_id               : '2a211f79-ffb7-4f5c-9e5f-9ce4d700c668',
                 // Project number pulled from dashboard, local value is ignored.
                 onesignal_google_project_number: 'REMOTE'
         ]

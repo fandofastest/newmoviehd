@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.gdriveplayer.indoxxi"
+    package="com.fmovies.freemoviehd"
     tools:ignore="MissingLeanbackLauncher">
 
     <uses-feature
@@ -19,7 +19,7 @@
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
 
     <application
-        android:name="com.gdriveplayer.indoxxi.indoxxi_utl.MyAppClass"
+        android:name="com.fmovies.freemoviehd.fmovies_utl.MyAppClass"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -28,7 +28,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.gdriveplayer.indoxxi.WebViewActivity"
+        <activity android:name="com.fmovies.freemoviehd.WebViewActivity"
             android:screenOrientation="landscape"
             android:theme="@style/FullscreenTheme"></activity>
 
@@ -43,49 +43,49 @@
             android:value="com.google.android.exoplayer2.ext.cast.DefaultCastOptionsProvider" />
 
         <activity
-            android:name="com.gdriveplayer.indoxxi.TermsActivity"
+            android:name="com.fmovies.freemoviehd.TermsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Nobar" />
         <activity
-            android:name="com.gdriveplayer.indoxxi.ReplyActivity"
+            android:name="com.fmovies.freemoviehd.ReplyActivity"
             android:label="@string/title_activity_reply"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.gdriveplayer.indoxxi.ProfileActivity"
+            android:name="com.fmovies.freemoviehd.ProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Nobar" />
         <activity
-            android:name="com.gdriveplayer.indoxxi.PassResetActivity"
+            android:name="com.fmovies.freemoviehd.PassResetActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Nobar" />
         <activity
-            android:name="com.gdriveplayer.indoxxi.SearchActivity"
+            android:name="com.fmovies.freemoviehd.SearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Nobar" />
         <activity
-            android:name="com.gdriveplayer.indoxxi.SignUpActivity"
+            android:name="com.fmovies.freemoviehd.SignUpActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Nobar" />
         <activity
-            android:name="com.gdriveplayer.indoxxi.LoginActivity"
+            android:name="com.fmovies.freemoviehd.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Nobar" />
         <activity
-            android:name="com.gdriveplayer.indoxxi.DetailsActivity"
+            android:name="com.fmovies.freemoviehd.DetailsActivity"
             android:configChanges="screenLayout|screenSize|orientation"
             android:label="@string/title_activity_details"
             android:theme="@style/AppTheme.NoActionBar" /> <!-- android:configChanges="screenLayout|screenSize|orientation" -->
         <activity
-            android:name="com.gdriveplayer.indoxxi.MainActivity"
+            android:name="com.fmovies.freemoviehd.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Nobar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.gdriveplayer.indoxxi.SettingsActivity"
+            android:name="com.fmovies.freemoviehd.SettingsActivity"
             android:theme="@style/AppTheme.Nobar" />
         <activity
-            android:name="com.gdriveplayer.indoxxi.SplashscreenActivity"
+            android:name="com.fmovies.freemoviehd.SplashscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme">
@@ -96,12 +96,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.gdriveplayer.indoxxi.ItemMovieActivity"
+            android:name="com.fmovies.freemoviehd.ItemMovieActivity"
             android:label="@string/title_activity_item_show"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.gdriveplayer.indoxxi.ItemTVActivity"
+            android:name="com.fmovies.freemoviehd.ItemTVActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Nobar" />
 
